@@ -57,7 +57,7 @@ async function run() {
       res.send({ token })
     })
 
-    // Save or update user
+    // Save or update user in db
     app.put('/users/:email', async (req, res) => {
       const email = req.params.email
       const userData = req.body
@@ -70,6 +70,15 @@ async function run() {
       res.send(result)
     })
 
+    // Get user role in db
+    app.get('/users/role/:email', verifyJWT, async (req, res) => {
+      const email = req.params.email
+      const result = await usersCollection.findOne(
+        { email },
+        { projection: { role: 1 } }
+      )
+      res.send(result)
+    })
 
 
     await client.db('admin').command({ ping: 1 })
